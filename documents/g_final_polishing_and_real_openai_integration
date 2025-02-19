@@ -1,0 +1,19 @@
+Lastly, we will replace the mock call with a real OpenAI GPT call, finalize everything, and confirm no code is orphaned.
+
+1. In “OpenAiSummarizer”, implement the real call to the OpenAI GPT model using LangChain4j:
+   - The method “summarize(String fullText)” should:
+     - Build a prompt requesting a maximum 10-sentence summary.
+     - Call LangChain4j’s OpenAI API with the “OPENAI_API_KEY” from environment.
+     - Return the summarized text from the response.
+
+2. Modify “OpenAiSummarizerTest” to include:
+   - A test with a real or near-real integration call if possible (ensuring your environment is set).
+   - A fallback mock test if we can’t do real calls.
+
+3. Update the “IntegrationTest” if needed to confirm everything works end-to-end with real GPT calls.
+
+4. Finally:
+   - Ensure logging is correct, errors terminate as specified, and no orphan classes remain.
+   - Confirm all tests pass, including real or mock integration tests.
+
+That’s it! Once this step is complete, you’ll have a production-ready summarization tool per the specification.
