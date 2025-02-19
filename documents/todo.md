@@ -50,13 +50,13 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage C: PDF Text Extraction**
 
-- [ ] **PdfExtractor Class**
+4- [x] **PdfExtractor Class**
     - Implement `String extractText(File pdf)`:
         - Uses an appropriate library (e.g., PDFBox) to read PDF text.
         - If PDF is corrupt or unreadable, throw `PdfExtractionException`.
         - If PDF is valid but has no text, return an empty string.
 
-- [ ] **Write Tests: PdfExtractorTest**
+- [x] **Write Tests: PdfExtractorTest**
     - Successfully extract text from a valid PDF.
     - Throw `PdfExtractionException` on a corrupt/unreadable PDF.
     - Return empty string for an empty PDF.
@@ -65,15 +65,15 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage D: Summarization Integration (Mocked)**
 
-- [ ] **Summarizer Interface**
+- [x] **Summarizer Interface**
     - Create `Summarizer` with `String summarize(String fullText)`.
 
-- [ ] **OpenAiSummarizer (Mocked)**
+- [x] **OpenAiSummarizer (Mocked)**
     - Implement the `summarize` method to return a placeholder string, e.g.:
         - `"This is a mocked summary."`
     - Handle empty text by returning something like `"No content to summarize."`
 
-- [ ] **Write Tests: OpenAiSummarizerTest**
+- [x] **Write Tests: OpenAiSummarizerTest**
     - Verify the placeholder string is returned when the method is called with normal text.
     - Verify a different placeholder or message when called with empty text.
 
