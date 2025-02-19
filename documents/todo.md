@@ -27,18 +27,18 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage B: Directory & File Discovery**
 
-- [ ] **PdfFileFinder Class**
+- [x] **PdfFileFinder Class**
     - Implement `getPdfFiles()`:
         - Scans `./pdfs/` for files ending in `.pdf`.
         - Returns a list of `File` objects.
         - If directory is missing or empty, return an empty list.
 
-- [ ] **Validate File Size**
+- [x] **Validate File Size**
     - Implement `validateFileSize(File pdf)` in `PdfFileFinder`:
         - Checks if the PDF is <= 5MB.
         - Throws `PdfTooLargeException` if the file exceeds 5MB.
 
-- [ ] **Write Tests: PdfFileFinderTest**
+- [x] **Write Tests: PdfFileFinderTest**
     - Check that `getPdfFiles()` returns:
         - An empty list if `./pdfs/` is nonexistent or empty.
         - The correct number of `.pdf` files when present.

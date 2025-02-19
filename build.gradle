@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.apache.pdfbox:pdfbox:2.0.29'
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
