@@ -112,7 +112,7 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage F: Main Flow Integration**
 
-- [ ] **Create PdfSummarizationApp (or Main)**
+- [x] **Create PdfSummarizationApp (or Main)**
     - **Startup**:
         - Call `EnvValidator.validateApiKey()` to ensure `OPENAI_API_KEY` is set.
         - If missing, terminate with a helpful console message.
@@ -127,7 +127,7 @@ Mark each item as complete (`[x]`) once done.
         - Write summary with `MarkdownWriter`.
         - Print a success message (e.g., `✅ Summary for {filename} created!`).
 
-- [ ] **IntegrationTest**
+- [x] **IntegrationTest**
     - Place sample PDF(s) in `./pdfs/`.
     - Run `PdfSummarizationApp.run()`.
     - Check that each PDF produces a corresponding `.md` file with the mocked summary.
