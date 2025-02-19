@@ -81,7 +81,7 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage E: Markdown Output**
 
-- [ ] **MarkdownWriter Class**
+- [x] **MarkdownWriter Class**
     - Implement `writeSummary(String summary, File originalPdf)`:
         - Creates a `.md` file in the **same directory** as `originalPdf`.
         - Names the file like `filename.pdf.md` if the original PDF is `filename.pdf`.
@@ -104,7 +104,7 @@ Mark each item as complete (`[x]`) once done.
           _Generated using LangChain4j & OpenAI GPT_
           ```
 
-- [ ] **Write Tests: MarkdownWriterTest**
+- [x] **Write Tests: MarkdownWriterTest**
     - Confirm `.md` file is created in the correct location.
     - Verify the content (filename, timestamp, summary) is correctly formatted.
 
