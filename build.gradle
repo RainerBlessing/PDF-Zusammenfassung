@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     implementation 'org.apache.pdfbox:pdfbox:2.0.29'
+    implementation 'dev.langchain4j:langchain4j:0.27.1'
+    implementation 'dev.langchain4j:langchain4j-open-ai:0.27.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -18,9 +20,54 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.3.1'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
 
-    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.hamcrest:hamcrest:2.1'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.aimitjava.PdfSummarizationApp'
+    }
+
+    // Include all dependencies in the jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    // Exclude signatures from dependencies
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 test {
     useJUnitPlatform()
 }
+
+// Custom task to ensure pdfs directory exists
+task createPdfsDir {
+    doLast {
+        mkdir "pdfs"
+    }
+}
+
+// Custom task to run the application
+task runApp(type: JavaExec) {
+    dependsOn createPdfsDir
+    group = 'application'
+    description = 'Runs the PDF Summarization Application'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.aimitjava.PdfSummarizationApp'
+
+    // Pass through system properties and environment variables
+    systemProperties System.properties
+    environment System.getenv()
+
+    // Ensure the OPENAI_API_KEY is available
+    doFirst {
+        if (!System.getenv('OPENAI_API_KEY')) {
+            throw new GradleException("OPENAI_API_KEY environment variable is not set!")
+        }
+    }
+}
+
+layout.buildDirectory = file('build/out')

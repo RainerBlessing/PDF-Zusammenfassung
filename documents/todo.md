@@ -136,25 +136,25 @@ Mark each item as complete (`[x]`) once done.
 
 ## **Stage G: Final Polishing & Real GPT Integration**
 
-- [ ] **Replace Mock with Real OpenAI GPT**
+- [x] **Replace Mock with Real OpenAI GPT**
     - In `OpenAiSummarizer`, implement a real call to OpenAI GPT with LangChain4j:
         - Retrieve `OPENAI_API_KEY` from environment.
         - Prompt for a max 10-sentence summary.
         - Handle network/timeout/API errors by throwing an exception if needed.
 
-- [ ] **Update OpenAiSummarizerTest**
+- [x] **Update OpenAiSummarizerTest**
     - Incorporate or at least partially test real GPT calls (if environment is available).
     - Continue to offer mock testing if direct API calls are impractical for CI.
 
-- [ ] **Refine Logging & Error Handling**
+- [x] **Refine Logging & Error Handling**
     - Ensure error messages match the specification (log to console, then terminate).
     - Verify that partial progress is not left incomplete if a file is large or an API call fails.
 
-- [ ] **Final IntegrationTest**
+- [x] **Final IntegrationTest**
     - Use a set of sample PDFs (valid, empty, possibly corrupt).
     - Validate correct `.md` summaries are generated, or that the application terminates gracefully on errors.
 
-- [ ] **Code Cleanup**
+- [x] **Code Cleanup**
     - Ensure no orphan classes, methods, or test scaffolding remain.
     - Check all docs, readme, and references are updated.
 

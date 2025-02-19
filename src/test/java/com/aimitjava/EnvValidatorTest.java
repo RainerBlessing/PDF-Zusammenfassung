@@ -1,27 +1,29 @@
 package com.aimitjava;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 class EnvValidatorTest {
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
     void shouldThrowExceptionWhenApiKeyNotSet() {
-        System.clearProperty("OPENAI_API_KEY");  // Remove the environment variable
-
         try {
             EnvValidator.validateApiKey();
-            org.junit.jupiter.api.Assertions.fail("Expected MissingApiKeyException to be thrown");
+            Assertions.fail("Expected MissingApiKeyException to be thrown");
         } catch (MissingApiKeyException exception) {
             assertThat(exception.getMessage(), is("OPENAI_API_KEY environment variable is not set"));
         }
     }
 
     @Test
+    @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
     void shouldNotThrowExceptionWhenApiKeyIsSet() {
-        System.setProperty("OPENAI_API_KEY", "dummy-api-key");  // Set a test value
-
         boolean exceptionThrown = false;
         try {
             EnvValidator.validateApiKey();
@@ -30,7 +32,5 @@ class EnvValidatorTest {
         }
 
         assertThat(exceptionThrown, is(false));
-
-        System.clearProperty("OPENAI_API_KEY");  // Clean up
     }
 }

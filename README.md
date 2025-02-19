@@ -1,91 +1,133 @@
-# PDF Summarization Project
+# PDF Summarization with OpenAI GPT
 
-This Java project provides automated PDF summarization capabilities using OpenAI's GPT model through LangChain4j. It processes PDFs from a specified directory, extracts their text content, and generates concise summaries.
+This Java application processes PDF files, extracts their text content, and generates concise summaries using OpenAI's GPT model through LangChain4j. Each summary is saved as a Markdown file alongside the original PDF.
 
 ## Features
 
-- Environment variable validation for API keys
-- PDF file discovery and size validation
-- Text extraction from PDF files
-- Text summarization (currently mocked, real GPT integration planned)
-- Markdown summary output generation
-
-## Project Structure
-
-```
-src/
-├── main/java/com/aimitjava/
-│   ├── EnvValidator.java           # Validates environment variables
-│   ├── MissingApiKeyException.java # Custom exception for missing API key
-│   ├── PdfFileFinder.java         # Handles PDF file discovery
-│   ├── PdfTooLargeException.java  # Custom exception for oversized PDFs
-│   ├── PdfExtractor.java          # Extracts text from PDFs
-│   ├── PdfExtractionException.java # Custom exception for extraction failures
-│   ├── Summarizer.java            # Interface for text summarization
-│   └── OpenAiSummarizer.java      # Implementation of summarization (currently mocked)
-└── test/java/com/aimitjava/
-    ├── EnvValidatorTest.java
-    ├── PdfFileFinderTest.java
-    ├── PdfExtractorTest.java
-    └── OpenAiSummarizerTest.java
-```
+- 📂 Automatic PDF discovery and processing
+- 📝 Text extraction from PDF files
+- 🤖 GPT-powered text summarization
+- 📊 Smart text chunking for large documents
+- 🔍 Environment and configuration management
+- ✨ Markdown summary output
 
 ## Prerequisites
 
 - Java 17 or higher
 - Gradle 7.x or higher
-- OpenAI API key (for future GPT integration)
+- OpenAI API key
 
 ## Setup
 
 1. Clone the repository:
 ```bash
 git clone [repository-url]
+cd [repository-name]
 ```
 
-2. Build the project:
-```bash
-./gradlew build
-```
-
-3. Set up environment variables:
+2. Set your OpenAI API key:
 ```bash
 export OPENAI_API_KEY=your-api-key-here
 ```
 
+Or add it to `src/main/resources/application.properties`:
+```properties
+openai.api.key=your-api-key-here
+```
+
+## Configuration
+
+You can configure the application through environment variables or `application.properties`:
+
+```properties
+# OpenAI Configuration
+openai.api.key=             # Your OpenAI API key
+openai.model.name=gpt-3.5-turbo
+openai.temperature=0.7
+
+# PDF Processing
+pdf.max.size.mb=5
+pdf.directory=./pdfs/
+```
+
+Environment variables take precedence over properties file settings.
+
 ## Usage
 
-1. Place PDF files in the `./pdfs/` directory
-2. Ensure files are under 5MB in size
-3. Run the application (implementation pending)
+1. Place your PDF files in the `pdfs` directory
+2. Run the application:
+```bash
+./gradlew runApp
+```
 
-## Running Tests
+The application will:
+- Process each PDF file under 5MB
+- Generate a summary using GPT
+- Create a .md file next to each PDF with the summary
 
-Execute all tests:
+Example output:
+```
+pdfs/
+├── document.pdf
+└── document.pdf.md
+```
+
+## Building
+
+Build the project:
+```bash
+./gradlew clean build
+```
+
+Run tests:
 ```bash
 ./gradlew test
 ```
 
-## Limitations
+## Project Structure
 
-- Maximum PDF file size: 5MB
-- Currently uses mocked summarization
-- Real GPT integration pending
+```
+src/
+├── main/
+│   ├── java/com/aimitjava/
+│   │   ├── Configuration.java        # Application configuration
+│   │   ├── EnvironmentProvider.java  # Environment variable handling
+│   │   ├── PdfExtractor.java        # PDF text extraction
+│   │   ├── OpenAiSummarizer.java    # GPT integration
+│   │   └── ...
+│   └── resources/
+│       └── application.properties    # Default configuration
+├── test/
+│   └── java/com/aimitjava/
+│       └── ...                      # Test classes
+```
 
-## Dependencies
+## Features in Detail
 
-- Apache PDFBox: PDF text extraction
-- JUnit 5: Testing framework
-- Hamcrest: Test assertions
-- Mockito: Test mocking
+### PDF Processing
+- Supports PDF files up to 5MB
+- Extracts text while maintaining structure
+- Handles various PDF formats
 
-## Future Enhancements
+### Text Summarization
+- Uses OpenAI's GPT-3.5-turbo model
+- Smart text chunking for large documents
+- Maximum 10-sentence summaries
+- Maintains context across chunks
 
-- [ ] Integration with OpenAI GPT
-- [ ] Markdown summary output
-- [ ] Batch processing capabilities
-- [ ] Progress reporting
-- [ ] Configuration options
+### Configuration Management
+- Environment variable support
+- Properties file configuration
+- Runtime configuration changes
+
+## Error Handling
+
+The application handles various error cases:
+- Missing API key
+- PDF size limits
+- Extraction failures
+- API rate limits
+- Token limit exceeded
 
 ## Contributing
 
@@ -95,6 +137,28 @@ Execute all tests:
 4. Push to the branch
 5. Create a Pull Request
 
+## Troubleshooting
+
+### Common Issues
+
+1. "No PDFs found":
+    - Ensure PDFs are in the `pdfs` directory
+    - Check file permissions
+
+2. "API key not found":
+    - Set OPENAI_API_KEY environment variable
+    - Or configure in application.properties
+
+3. "Token limit exceeded":
+    - Large PDFs are automatically chunked
+    - Check PDF content size
+
 ## License
 
-[License information pending]
+[License information]
+
+## Acknowledgments
+
+- Apache PDFBox for PDF processing
+- LangChain4j for OpenAI integration
+- OpenAI for GPT API
