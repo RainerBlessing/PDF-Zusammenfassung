@@ -8,22 +8,22 @@ public class PdfSummarizationApp {
     private static final String ERROR_PREFIX = "❌ Error: ";
 
     private final PdfFileFinder fileFinder;
-    private final PdfExtractor extractor;
+    private final PdfDocumentHandler documentHandler;
     private final Summarizer summarizer;
     private final MarkdownWriter writer;
 
     public PdfSummarizationApp() {
         this.fileFinder = new PdfFileFinder();
-        this.extractor = new PdfExtractor();
+        this.documentHandler = new PdfDocumentHandler();
         this.summarizer = new OpenAiSummarizer();
         this.writer = new MarkdownWriter();
     }
 
     // Constructor for testing with mocked dependencies
-    PdfSummarizationApp(PdfFileFinder fileFinder, PdfExtractor extractor,
+    PdfSummarizationApp(PdfFileFinder fileFinder, PdfDocumentHandler documentHandler,
                         Summarizer summarizer, MarkdownWriter writer) {
         this.fileFinder = fileFinder;
-        this.extractor = extractor;
+        this.documentHandler = documentHandler;
         this.summarizer = summarizer;
         this.writer = writer;
     }
@@ -70,7 +70,7 @@ public class PdfSummarizationApp {
 
         try {
             // Extract text
-            String text = extractor.extractText(pdf);
+            String text = documentHandler.extractText(pdf);
 
             // Generate summary
             String summary = summarizer.summarize(text);
