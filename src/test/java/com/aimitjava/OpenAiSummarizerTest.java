@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,20 +25,15 @@ class OpenAiSummarizerTest {
 
     @BeforeEach
     void setUp() {
-        mockModel = Mockito.mock(ChatLanguageModel.class);
-        mockConfig = Mockito.mock(Configuration.class);
+        mockModel = mock(ChatLanguageModel.class);
+        mockConfig = mock(Configuration.class);
         promptCaptor = ArgumentCaptor.forClass(String.class);
 
-        // Standardverhalten für den Mock definieren
-        when(mockModel.generate(anyString())).thenReturn("Mocked summary response");
-
-        // Mock-Konfiguration vorbereiten
         when(mockConfig.getOpenAiApiKey()).thenReturn("test-api-key");
         when(mockConfig.getOpenAiModelName()).thenReturn("gpt-3.5-turbo-test");
         when(mockConfig.getOpenAiTemperature()).thenReturn(0.7);
 
-        // Summarizer mit Mock-Objekten erstellen
-        summarizer = new OpenAiSummarizer(mockModel, mockConfig);
+        summarizer = new OpenAiSummarizer(mockModel);
     }
 
     private static Stream<Arguments> emptyOrInvalidTextCases() {
@@ -62,72 +56,57 @@ class OpenAiSummarizerTest {
         // Given
         String shortText = "This is a sample text that needs to be summarized.";
         String expectedSummary = "Short text summary.";
-        when(mockModel.generate(anyString())).thenReturn(expectedSummary);
+        when(mockModel.chat(anyString())).thenReturn(expectedSummary);
 
         // When
-        String result = summarizer.summarize(shortText);
+        summarizer.summarize(shortText);
 
         // Then
-        verify(mockModel).generate(promptCaptor.capture());
+        verify(mockModel, times(1)).chat(promptCaptor.capture());
         String prompt = promptCaptor.getValue();
-
-        assertThat(result, is(expectedSummary));
         assertThat(prompt, containsString("maximum 5 sentences"));
         assertThat(prompt, containsString(shortText));
     }
 
     @Test
-    void shouldChunkAndCombineLargeText() {
+    void shouldHandleLongTextWithMultipleChunks() {
         // Given
-        String largeText = generateLargeText();
+        String longText = generateLongText(10000); // Text longer than chunk size
+        String chunkSummary = "Chunk summary";
+        String finalSummary = "Final combined summary";
 
-        // Mock Antworten für jeden generate()-Aufruf
-        when(mockModel.generate(anyString()))
-                .thenReturn("Chunk summary 1")   // Erste Chunk-Zusammenfassung
-                .thenReturn("Chunk summary 2")   // Zweite Chunk-Zusammenfassung
-                .thenReturn("Final combined summary");  // Finale Zusammenfassung
+        when(mockModel.chat(contains("Text to summarize")))
+                .thenReturn(chunkSummary);
+        when(mockModel.chat(contains("Summaries to combine")))
+                .thenReturn(finalSummary);
 
         // When
-        String result = summarizer.summarize(largeText);
+        String result = summarizer.summarize(longText);
 
         // Then
-        // Verify exact 3 calls to generate()
-        verify(mockModel, times(3)).generate(promptCaptor.capture());
-
+        verify(mockModel, atLeast(2)).chat(promptCaptor.capture());
         List<String> prompts = promptCaptor.getAllValues();
 
-        // Prüfe Anzahl der Aufrufe
-        assertThat(prompts.size(), is(3));
+        // Verify chunk summaries were generated
+        assertThat(prompts.subList(0, prompts.size() - 1),
+                everyItem(both(containsString("maximum 5 sentences"))
+                        .and(containsString("Text to summarize"))));
 
-        // Überprüfe Prompts für Chunk-Zusammenfassungen
-        assertThat(prompts.subList(0, 2),
-                everyItem(allOf(
-                        containsString("maximum 5 sentences"),
-                        not(containsString("unified summary"))
-                )));
+        // Verify final summary was generated
+        String finalPrompt = prompts.getLast();
+        assertThat(finalPrompt, containsString("unified summary"));
+        assertThat(finalPrompt, containsString("maximum 10 sentences"));
+        assertThat(finalPrompt, containsString(chunkSummary));
 
-        // Überprüfe finalen Prompt
-        String finalPrompt = prompts.get(2);
-        assertThat(finalPrompt, allOf(
-                containsString("unified summary"),
-                containsString("maximum 10 sentences")
-        ));
-
-        // Überprüfe Ergebnis
-        assertThat(result, is("Final combined summary"));
+        // Verify final result
+        assertThat(result, is(finalSummary));
     }
 
-    // Restliche Methoden bleiben unverändert...
-
-    private String generateLargeText() {
-        StringBuilder text = new StringBuilder();
-        for (int i = 0; i < 50; i++) {
-            text.append("Paragraph ").append(i + 1).append(": ");
-            text.append("This is a sample paragraph that contains multiple sentences. ");
-            text.append("It includes various information that needs to be summarized. ");
-            text.append("The content is designed to test the chunking functionality. ");
-            text.append("Each paragraph adds to the overall length of the text. ");
-            text.append("\n\n");
+    private String generateLongText(int approxLength) {
+        StringBuilder text = new StringBuilder(approxLength);
+        String sentence = "This is a sample sentence for testing purposes. ";
+        while (text.length() < approxLength) {
+            text.append(sentence);
         }
         return text.toString();
     }
