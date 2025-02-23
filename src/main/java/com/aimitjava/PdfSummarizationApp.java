@@ -81,10 +81,6 @@ public class PdfSummarizationApp {
             // Print success message
             System.out.println("✅ Summary for " + pdf.getName() + " created!");
 
-        } catch (PdfExtractionException e) {
-            String errorMsg = "Failed to extract text from " + pdf.getName() + ": " + e.getMessage();
-            logError(errorMsg);
-            throw new ApplicationTerminationException(errorMsg, 1);
         } catch (IOException e) {
             String errorMsg = "Failed to process " + pdf.getName() + ": " + e.getMessage();
             logError(errorMsg);
